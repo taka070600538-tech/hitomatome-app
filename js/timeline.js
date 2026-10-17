@@ -7,6 +7,7 @@ export const JOGGING_KCAL_PER_HOUR = 400;
 
 const MEAL_KEYS = ['breakfast', 'lunch', 'dinner', 'snack'];
 const SKIP_NOTE = '(時刻未入力)';
+const DUP_NOTE = '結びつけ先が他の出来事と重複しています(設定で選び直してください)';
 const NOT_FOUND_NOTE = '結びつけ先の項目が見つかりません(設定で選び直してください)';
 
 const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
@@ -130,7 +131,11 @@ export function buildTimeline({ date, sources, settings, sheet }) {
     return out.join(' ・ ');
   };
 
-  const bindingOf = (key) => settings?.bindings?.[key] ?? { itemId: null, defaultTime: EVENTS.find((e) => e.key === key).defaultTime };
+  const bindingOf = (key) => {
+    const fallback = EVENTS.find((e) => e.key === key).defaultTime;
+    const b = settings?.bindings?.[key];
+    return { itemId: b?.itemId ?? null, defaultTime: isHHMM(b?.defaultTime) ? b.defaultTime : fallback };
+  };
 
   // item id -> EVENTS のうち、その項目に結びつき、かつ対象アプリが利用可能なもの(先勝ち)
   const eventByItem = new Map();
@@ -173,7 +178,8 @@ export function buildTimeline({ date, sources, settings, sheet }) {
     const b = bindingOf(e.key);
     const data = eventData(e.key, sources, sheet);
     const hasTime = !!(b.itemId && times[b.itemId]);
-    if (hasTime) return;
+    const duplicate = hasTime && eventByItem.get(b.itemId) !== e;
+    if (hasTime && !duplicate) return;
     if (e.key === 'snack' && !b.itemId) {
       if (!data) return;
       entries.push({
@@ -186,7 +192,8 @@ export function buildTimeline({ date, sources, settings, sheet }) {
       return;
     }
     let note = data ? SKIP_NOTE : null;
-    if (b.itemId && diaryAvail && !items.some((it) => it.id === b.itemId)) note = NOT_FOUND_NOTE;
+    if (duplicate) note = DUP_NOTE;
+    else if (b.itemId && diaryAvail && !items.some((it) => it.id === b.itemId)) note = NOT_FOUND_NOTE;
     entries.push({
       row: {
         kind: eventKind(e.key), eventKey: e.key, time: b.defaultTime, prevDay: false,

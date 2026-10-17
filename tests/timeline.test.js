@@ -239,3 +239,23 @@ test('summaryText は null を省き、全 null は定型文', () => {
   assert.equal(summaryText({ kcal: 100, goalKcal: null, joggingMin: null, bp: null, sleepMin: null }), '食事 100 kcal');
   assert.equal(summaryText({ kcal: null, goalKcal: null, joggingMin: null, bp: null, sleepMin: null }), 'この日の記録はありません');
 });
+
+test('同じ項目に2つのイベントを結びつけ → 後者は重複 note の skipped 行', () => {
+  const st = { ...settings, bindings: { ...settings.bindings, lunch: { itemId: 'bf-end', defaultTime: '13:00' } } };
+  const { rows } = build({ settings: st });
+  const bf = find(rows, (x) => x.eventKey === 'breakfast');
+  assert.equal(bf.skipped, false);
+  assert.equal(bf.time, '08:43');
+  const lunch = find(rows, (x) => x.eventKey === 'lunch');
+  assert.equal(lunch.skipped, true);
+  assert.equal(lunch.time, '13:00');
+  assert.match(lunch.detail, /^昼食 795 kcal/);
+  assert.equal(lunch.note, '結びつけ先が他の出来事と重複しています(設定で選び直してください)');
+});
+
+test('不正な defaultTime は EVENTS の既定に戻る', () => {
+  const st = { ...settings, bindings: { ...settings.bindings, dinner: { itemId: 'dinner-end', defaultTime: 'zz' } } };
+  const r = find(build({ settings: st }).rows, (x) => x.eventKey === 'dinner');
+  assert.equal(r.time, '19:00');
+  assert.ok(Number.isFinite(r.sortKey));
+});
