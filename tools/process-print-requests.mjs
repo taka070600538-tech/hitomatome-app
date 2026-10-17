@@ -1,7 +1,7 @@
 // PC側の印刷キュー: app-data の印刷依頼を PDF 化して印刷する
 // 使い方: node tools/process-print-requests.mjs [--dry-run] [--no-pull] [--init-ledger]
 import { spawnSync } from 'node:child_process';
-import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { renderSheetHtml } from '../js/sheet.js';
@@ -40,14 +40,22 @@ function pullAppData() {
   else log('git pull 完了');
 }
 
+// 台帳が無い・壊れている場合は null(壊れた台帳は退避して初期化パスへ)
 function loadLedger() {
   if (!existsSync(LEDGER_PATH)) return null;
   const ledger = parseLedger(readFileSync(LEDGER_PATH, 'utf8'));
-  if (!ledger) throw new Error(`台帳が壊れています: ${LEDGER_PATH}`);
-  return ledger;
+  if (ledger) return ledger;
+  if (DRY_RUN) { log('台帳が壊れています(dry-run のため退避しません)'); return null; }
+  const t = new Date();
+  const ts = `${t.getFullYear()}${pad(t.getMonth() + 1)}${pad(t.getDate())}T${pad(t.getHours())}${pad(t.getMinutes())}${pad(t.getSeconds())}`;
+  const backup = join(STATE_DIR, `printed.corrupt-${ts}.json`);
+  renameSync(LEDGER_PATH, backup);
+  log(`台帳が壊れていたため退避して再初期化します: ${backup}`);
+  return null;
 }
 
 function saveLedger(ledger) {
+  if (DRY_RUN) return;
   writeFileSync(LEDGER_PATH, JSON.stringify(ledger, null, 2), 'utf8');
 }
 
@@ -63,7 +71,7 @@ function renderToPdf(request, base) {
     `--print-to-pdf=${pdfPath}`, pathToFileURL(htmlPath).href,
   ], { encoding: 'utf8', timeout: 120000 });
   if (!existsSync(pdfPath) || statSync(pdfPath).size === 0) {
-    throw new Error(`PDF 生成に失敗: ${(r.stderr || r.error || '').toString().trim().slice(0, 200)}`);
+    throw new Error(`PDF 生成に失敗: ${(r.stderr || r.error || '').toString().trim().slice(-200)}`);
   }
   return pdfPath;
 }
@@ -71,7 +79,7 @@ function renderToPdf(request, base) {
 function printPdf(pdfPath) {
   if (DRY_RUN) return '(dry-run)';
   const r = spawnSync('py', ['-3', join(TOOLS_DIR, 'print_pdf.py'), pdfPath], { encoding: 'utf8', timeout: 180000 });
-  if (r.status !== 0) throw new Error(`印刷失敗: ${(r.stderr || r.error || '').toString().trim().slice(0, 200)}`);
+  if (r.status !== 0) throw new Error(`印刷失敗: ${(r.stderr || r.error || '').toString().trim().slice(-200)}`);
   const m = /^Printer:\s*(.+)$/m.exec(r.stdout || '');
   return m ? m[1].trim() : '(不明)';
 }
@@ -104,7 +112,9 @@ function main() {
       ledger = markEntry(ledger, requestIdFromFile(f), { status: 'skipped', at: new Date().toISOString() });
     }
     saveLedger(ledger);
-    log(`台帳を初期化: 既存の依頼 ${plan.toSkip.length} 件を skipped として登録`);
+    log(DRY_RUN
+      ? '台帳が無いため初期化が必要です(dry-run のため書き込みません)'
+      : `台帳を初期化: 既存の依頼 ${plan.toSkip.length} 件を skipped として登録`);
     return;
   }
   if (INIT_LEDGER) return;
@@ -112,17 +122,22 @@ function main() {
   for (const f of plan.toPrint) {
     const id = requestIdFromFile(f);
     const base = f.replace(/\.json$/, '');
+    // 先に printing として確保(保存に失敗したら印刷せず全体を中止 = 再印刷ループ防止)
+    ledger = markEntry(ledger, id, { status: 'printing', at: new Date().toISOString() });
+    saveLedger(ledger);
+    let result;
     try {
       const request = JSON.parse(readFileSync(join(REQ_DIR, f), 'utf8'));
       const pdf = renderToPdf(request, base);
       const printer = printPdf(pdf);
-      ledger = markEntry(ledger, id, { status: 'printed', at: new Date().toISOString(), pdf, printer });
-      log(`印刷完了: ${f} -> ${printer}`);
+      result = { status: 'printed', at: new Date().toISOString(), pdf, printer };
+      log(DRY_RUN ? `印刷完了(dry-run、台帳は更新しません): ${f}` : `印刷完了: ${f} -> ${printer}`);
     } catch (e) {
-      ledger = markEntry(ledger, id, { status: 'failed', at: new Date().toISOString(), error: String(e.message || e) });
+      result = { status: 'failed', at: new Date().toISOString(), error: String(e.message || e) };
       log(`失敗: ${f}: ${e.message || e}`);
     }
-    saveLedger(ledger);
+    ledger = markEntry(ledger, id, result);
+    saveLedger(ledger); // 失敗時は throw → main の catch で中止(entry は printing のまま)
   }
   if (plan.toPrint.length === 0) log('新しい依頼なし');
   prunePdfs();

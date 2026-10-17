@@ -16,6 +16,7 @@ export function requestIdFromFile(fileName) {
   return m ? m[2] : null;
 }
 
+// 台帳に既にあるキー(printed / failed / skipped / printing のどれでも)は toPrint から除外する
 export function planRun({ fileNames, ledger }) {
   const valid = [...new Set(fileNames)].filter((f) => requestIdFromFile(f)).sort();
   if (!ledger) return { initializing: true, toPrint: [], toSkip: valid };

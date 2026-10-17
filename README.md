@@ -22,18 +22,18 @@ powershell -ExecutionPolicy Bypass -File tools\register-task.ps1
 1. `app-data` に `.git\index.lock` があればスキップ
 2. `git pull`(失敗しても手元の依頼は処理する)
 3. 台帳 `tools\state\printed.json` にない依頼だけを、HTML → Edge で PDF → `print_pdf.py` で既定のプリンターへ印刷
-4. 依頼ごとに台帳へ `printed` / `failed` を記録。古い PDF/HTML は新しい30件分を残して削除
+4. 依頼ごとに、印刷前に台帳へ `printing` を書いて確保し(保存に失敗したら印刷せず中止)、結果を `printed` / `failed` で上書きする。古い PDF/HTML は新しい30件分を残して削除
 
 手動実行(リポジトリ直下で):
 
 ```powershell
 node tools\process-print-requests.mjs               # 通常実行
-node tools\process-print-requests.mjs --dry-run     # 印刷せず PDF まで作る(台帳には printed と記録される)
+node tools\process-print-requests.mjs --dry-run     # 印刷せず PDF まで作る(台帳は一切更新しないので依頼は消費されない)
 node tools\process-print-requests.mjs --no-pull     # git pull をしない
 node tools\process-print-requests.mjs --init-ledger # 台帳が無ければ既存の依頼を skipped で登録して終了
 ```
 
-注意: `tools\state\printed.json` を消すと、次回実行時に既存の依頼がすべて `skipped` として登録される(印刷されない)。再印刷したいときは、台帳から該当 requestId の entry だけを消す。
+注意: `tools\state\printed.json` を消すと、次回実行時に既存の依頼がすべて `skipped` として登録される(印刷されない)。台帳が壊れていた場合は `printed.corrupt-<日時>.json` に退避して再初期化する(既存の依頼は skipped 扱い)。再印刷したいときは、台帳から該当 requestId の entry だけを消す。
 
 ### PDF とログの場所
 

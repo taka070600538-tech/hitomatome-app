@@ -43,6 +43,15 @@ test('planRun: 台帳済みを除外し昇順', () => {
   assert.deepEqual(r.toSkip, []);
 });
 
+test('planRun: printing など台帳にあるキーはすべて除外', () => {
+  const entries = {
+    [ID1]: { status: 'printing', at: 'x' },
+    [ID2]: { status: 'failed', at: 'x', error: 'e' },
+  };
+  const r = planRun({ fileNames: [`2026-10-15_${ID1}.json`, `2026-10-15_${ID2}.json`], ledger: { version: 1, entries } });
+  assert.deepEqual(r.toPrint, []);
+});
+
 test('planRun: 同名ファイルは1回だけ、同日付の別requestIdは両方', () => {
   const a = `2026-10-15_${ID1}.json`;
   const b = `2026-10-15_${ID2}.json`;
