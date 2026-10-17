@@ -5,8 +5,8 @@ import { renderSheetHtml, esc } from './sheet.js';
 import { loadSettings } from './settings.js';
 import { buildTimeline, buildSummary, summaryText } from './timeline.js';
 import { buildPrintRequest, requestPath } from './printRequest.js';
+import { SYNC_URL } from './syncUrl.js';
 
-const SYNC_URL = 'https://taka070600538-tech.github.io/app-sync/v1/sync.js';
 
 export async function renderTimelineView(container, { date = todayString() } = {}) {
   const token = Symbol('render');
@@ -114,7 +114,7 @@ function openPrintModal(date, sheet) {
     }
     try {
       const r = await sync.putFile(requestPath(request), JSON.stringify(request, null, 2), { message: 'print-request: ' + date });
-      if (r.ok) result.textContent = 'PCへ送りました。PCが起動していれば10分以内に印刷されます';
+      if (r.ok) { result.textContent = 'PCへ送りました。PCが起動していれば10分以内に印刷されます'; return; }
       else if (r.message === 'トークンが未設定です') result.textContent = '設定タブでGitHub連携を設定してください';
       else result.textContent = r.message;
     } catch (e) {

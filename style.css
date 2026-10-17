@@ -30,7 +30,7 @@ body {
 
 /* --- 画面 --- */
 :root { --c-meal: #D97706; --c-jogging: #16a34a; --c-strength: #15803d; --c-bp: #dc2626; --c-diary: #6366f1; }
-.view { max-width: 480px; margin: 0 auto; }
+.view { max-width: 480px; margin: 0 auto; padding-bottom: 80px; }
 .date-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .date-nav button { border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 8px 14px; font-size: 15px; color: var(--text); }
 .date-nav .date-center { flex: 1; font-weight: 700; }

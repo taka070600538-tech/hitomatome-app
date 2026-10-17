@@ -2,8 +2,11 @@ import { EVENTS, loadSettings, saveSettings, validateSettings } from './settings
 import { loadDaySources } from './sources.js';
 import { todayString } from './format.js';
 import { esc } from './sheet.js';
+import { SYNC_URL } from './syncUrl.js';
 
 export async function renderSettingsView(container) {
+  const token = Symbol('render');
+  container._renderToken = token;
   let items = [];
   let diaryOk = false;
   try {
@@ -13,16 +16,18 @@ export async function renderSettingsView(container) {
   } catch {
     items = [];
   }
+  if (container._renderToken !== token) return;
   const settings = loadSettings(localStorage, items);
 
   const rowsHtml = EVENTS.map((e) => {
     const b = settings.bindings[e.key];
-    const select = e.key === 'snack' ? '' : `<select data-key="${e.key}" class="bind-select">
+    const select = e.key === 'snack' ? '' : `<select data-event="${e.key}" class="bind-select">
       <option value="">結びつけない</option>
+      ${b.itemId && !items.some((it) => it.id === b.itemId) ? `<option value="${esc(b.itemId)}" selected disabled>(見つかりません: ${esc(b.itemId)})</option>` : ''}
       ${items.map((it) => `<option value="${esc(it.id)}"${it.id === b.itemId ? ' selected' : ''}>${esc(it.label)}</option>`).join('')}
     </select>`;
     return `<div class="bind-row"><span class="bind-label">${esc(e.label)}</span>${select}
-      <input type="time" data-key="${e.key}" class="bind-time" value="${esc(b.defaultTime)}"></div>`;
+      <input type="time" data-event="${e.key}" class="bind-time" value="${esc(b.defaultTime)}"></div>`;
   }).join('');
 
   container.innerHTML = `
@@ -42,14 +47,13 @@ export async function renderSettingsView(container) {
       <p id="file-backup-message" class="save-message" role="status"></p>
     </section>`;
 
-  const persist = () => {
+  const persist = (ev) => {
+    const el = ev.target;
+    const key = el.dataset.event;
     const next = loadSettings(localStorage, items);
-    container.querySelectorAll('.bind-select').forEach((sel) => {
-      next.bindings[sel.dataset.key].itemId = sel.value || null;
-    });
-    container.querySelectorAll('.bind-time').forEach((inp) => {
-      if (inp.value) next.bindings[inp.dataset.key].defaultTime = inp.value;
-    });
+    if (!next.bindings[key]) return;
+    if (el.classList.contains('bind-select')) next.bindings[key].itemId = el.value || null;
+    else if (el.value) next.bindings[key].defaultTime = el.value;
     saveSettings(localStorage, next);
   };
   container.querySelectorAll('.bind-select, .bind-time').forEach((el) => el.addEventListener('change', persist));
@@ -79,7 +83,7 @@ export async function renderSettingsView(container) {
     }
   });
 
-  import('https://taka070600538-tech.github.io/app-sync/v1/sync.js')
+  import(SYNC_URL)
     .then((sync) => {
       sync.renderBackupControls(container.querySelector('#backup-section'));
       sync.renderTokenSettings(container.querySelector('#token-section'));

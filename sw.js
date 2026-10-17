@@ -1,6 +1,6 @@
 // manifest(manifest.json)はキャッシュしない: インストール判定に常に最新版を使わせるため
 // (キャッシュ優先だと、一度取り込んだ古いmanifestが更新後も配信され続ける)
-const CACHE_NAME = 'daily-summary-v10';
+const CACHE_NAME = 'daily-summary-v11';
 const ASSETS = [
   './',
   './index.html',
@@ -8,6 +8,7 @@ const ASSETS = [
   './js/app.js',
   './js/timelineView.js',
   './js/settingsView.js',
+  './js/syncUrl.js',
   './js/format.js',
   './js/idbRead.js',
   './js/mealSummary.js',

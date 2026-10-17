@@ -3,8 +3,8 @@ import { renderSettingsView } from './settingsView.js';
 import { loadSettings, saveSettings, validateSettings } from './settings.js';
 import { parseDiaryState, DIARY_KEY } from './sources.js';
 import { todayString } from './format.js';
+import { SYNC_URL } from './syncUrl.js';
 
-const SYNC_URL = 'https://taka070600538-tech.github.io/app-sync/v1/sync.js';
 
 function currentItems() {
   try {
