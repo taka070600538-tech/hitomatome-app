@@ -27,3 +27,48 @@ body {
   font-size: 14px; color: var(--muted);
 }
 .nav-btn.active { color: var(--accent); font-weight: 700; }
+
+/* --- 画面 --- */
+:root { --c-meal: #D97706; --c-jogging: #16a34a; --c-strength: #15803d; --c-bp: #dc2626; --c-diary: #6366f1; }
+.view { max-width: 480px; margin: 0 auto; }
+.date-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.date-nav button { border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 8px 14px; font-size: 15px; color: var(--text); }
+.date-nav .date-center { flex: 1; font-weight: 700; }
+.date-input { width: 100%; margin-bottom: 12px; padding: 8px; font-size: 16px; }
+.summary-card { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 12px; font-size: 14px; margin-bottom: 12px; }
+.notices { margin: 0 0 12px; padding-left: 18px; font-size: 12px; color: var(--muted); }
+.timeline { list-style: none; margin: 0; padding: 0; }
+.row { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.row .time { width: 64px; flex: none; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.row .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c-diary); flex: none; margin-top: 5px; }
+.row.kind-meal .dot { background: var(--c-meal); }
+.row.kind-jogging .dot { background: var(--c-jogging); }
+.row.kind-strength .dot { background: var(--c-strength); }
+.row.kind-bp .dot { background: var(--c-bp); }
+.row .body { flex: 1; min-width: 0; }
+.row .label { font-weight: 700; font-size: 14px; }
+.row .detail { font-size: 13px; }
+.row small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.row.expandable .body { cursor: pointer; }
+.expand { margin: 6px 0 0; padding-left: 16px; font-size: 12px; color: var(--muted); }
+.is-skipped { color: #888; }
+.is-skipped .dot { background: #bbb !important; }
+.print-area { margin-top: 16px; }
+.primary-btn { width: 100%; padding: 12px; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 700; }
+.primary-btn:disabled { background: #ccc; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+.panel-title { margin: 0 0 8px; font-size: 15px; }
+.panel-note { font-size: 12px; color: var(--muted); }
+.panel-note.error { color: #dc2626; }
+.bind-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.bind-label { width: 64px; flex: none; font-size: 13px; }
+.bind-select { flex: 1; min-width: 0; padding: 6px; font-size: 14px; }
+.bind-time { padding: 6px; font-size: 14px; }
+.save-btn { margin: 4px 4px 4px 0; padding: 8px 12px; border: 1px solid var(--accent); background: var(--surface); color: var(--accent); border-radius: 8px; font-size: 14px; }
+.save-message { font-size: 12px; color: var(--muted); }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 10; padding: 12px; }
+.modal-card { background: var(--surface); border-radius: 12px; padding: 12px; width: 100%; max-width: 480px; }
+.sheet-preview { width: 100%; height: 70vh; border: 1px solid var(--border); background: #fff; }
+.send-result { font-size: 13px; min-height: 1.4em; }
+.modal-actions { display: flex; gap: 8px; }
+.modal-actions .close-btn { flex: none; padding: 12px 16px; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; }
