@@ -2,7 +2,7 @@
   "name": "1日まとめ",
   "short_name": "1日まとめ",
   "id": "daily-summary-app-2",
-  "start_url": "./",
+  "start_url": "./?pwa=2",
   "display": "standalone",
   "background_color": "#FBF7F2",
   "theme_color": "#D97706",
