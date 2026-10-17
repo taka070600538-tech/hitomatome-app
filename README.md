@@ -4,7 +4,7 @@
 
 カロリー計算アプリなど4つのスマホアプリの記録を1日分まとめて表示し、食事の記録を A4 の紙に印刷するための PWA。スマホ側で「印刷依頼」を作ると、GitHub の `app-data` リポジトリ(`daily-summary/print-requests/`)に依頼 JSON が保存される。PC 側のタスクがそれを定期的に取り込み、PDF にしてプリンターで印刷する。
 
-- 公開URL: https://taka070600538-tech.github.io/daily-summary-app/
+- 公開URL: https://taka070600538-tech.github.io/hitomatome-app/
 - 設計書: `Git\docs\superpowers\specs\2026-10-17-daily-summary-app-design.md`、実装計画: `Git\docs\superpowers\plans\2026-10-17-daily-summary-app.md`
 
 ## 使い方
