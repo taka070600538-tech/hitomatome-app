@@ -1,0 +1,124 @@
+<h2>スマホの横断ビューは、どちらが近いですか</h2>
+<p class="subtitle">同じ日(2026-10-15)のデータです。どちらも上部で日付を切り替え、下部に「この日を印刷」ボタンがあります。</p>
+
+<style>
+  .phone { width:360px; min-height:640px; background:#f5f6f8; color:#111; border:10px solid #222; border-radius:28px; padding:10px; box-sizing:border-box; font-family:"Yu Gothic","Meiryo",sans-serif; font-size:12.5px; line-height:1.4; margin:0 auto; }
+  .phone .bar { display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:15px; padding:4px 4px 8px; }
+  .phone .bar .arrow { font-size:18px; color:#555; }
+  .phone .card { background:#fff; border-radius:10px; padding:8px 10px; margin-bottom:8px; box-shadow:0 1px 2px rgba(0,0,0,.08); }
+  .phone .card h4 { margin:0 0 4px; font-size:13px; color:#111; display:flex; justify-content:space-between; }
+  .phone .card h4 span { font-weight:400; color:#555; font-size:12px; }
+  .phone .kv { display:grid; grid-template-columns:auto 1fr; gap:1px 10px; }
+  .phone .kv .k { color:#555; }
+  .phone .mini { display:grid; grid-template-columns:auto 1fr auto; gap:2px 6px; align-items:center; font-size:11px; margin-top:4px; }
+  .phone .mini .t { height:7px; background:#e5e7eb; border-radius:2px; position:relative; }
+  .phone .mini .f { position:absolute; left:0; top:0; bottom:0; background:#6b7280; }
+  .phone .mini .f.over { background:#dc2626; }
+  .phone .btn { background:#2563eb; color:#fff; text-align:center; border-radius:10px; padding:10px; font-weight:700; margin-top:4px; }
+  .phone .muted { color:#777; font-size:11px; }
+  .tl { position:relative; padding-left:54px; }
+  .tl .ev { position:relative; padding:3px 0 3px 10px; border-left:2px solid #cbd5e1; margin-left:0; }
+  .tl .ev::before { content:""; position:absolute; left:-6px; top:8px; width:10px; height:10px; border-radius:50%; background:#6b7280; }
+  .tl .ev.meal::before { background:#f59e0b; }
+  .tl .ev.ex::before { background:#10b981; }
+  .tl .ev.bp::before { background:#ef4444; }
+  .tl .ev.sleep::before { background:#6366f1; }
+  .tl .ev .time { position:absolute; left:-54px; width:44px; text-align:right; color:#555; font-variant-numeric:tabular-nums; font-size:11.5px; }
+  .tl .ev .lab { font-weight:600; }
+  .tl .ev .det { color:#555; font-size:11px; }
+  .cards .card-image { padding:14px; background:#888; }
+</style>
+
+<div class="cards">
+
+  <div class="card" data-choice="A" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="phone">
+        <div class="bar"><span class="arrow">◀</span><span>10/15 (木)</span><span class="arrow">▶</span></div>
+
+        <div class="card">
+          <h4>食事 <span>2,236 kcal / 目標 1,800</span></h4>
+          <div class="muted">朝 704 ／ 昼 795 ／ 夕 434 ／ 間食 303</div>
+          <div class="mini">
+            <div>たんぱく質</div><div class="t"><div class="f over" style="width:78%"></div></div><div>70.1 / 60 g</div>
+            <div>脂質</div><div class="t"><div class="f over" style="width:72%"></div></div><div>97.2 / 90 g</div>
+            <div>炭水化物</div><div class="t"><div class="f over" style="width:89%"></div></div><div>266.1 / 200 g</div>
+            <div>塩分</div><div class="t"><div class="f over" style="width:99%"></div></div><div>7.4 / 5 g</div>
+          </div>
+          <div class="muted" style="margin-top:4px">スルフォラファン 30 mg ／ ALA 4,968 mg</div>
+        </div>
+
+        <div class="card">
+          <h4>運動 <span>ジョギング 27分 ・ 約180 kcal</span></h4>
+          <div class="kv">
+            <div class="k">ジョギング</div><div>3.6 km ／ 27 分</div>
+            <div class="k">筋トレ</div><div>腕立て 34+10+6 ／ 腹筋 50 ／ 背筋 50 ／ スクワット 50</div>
+            <div class="k">握力</div><div>右 35.5 kg ／ 左 36.5 kg</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>血圧 <span>05:34 測定</span></h4>
+          <div class="kv">
+            <div class="k">左</div><div><b>132 / 84</b> mmHg</div>
+            <div class="k">右</div><div><b>126 / 87</b> mmHg</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>時間 <span>睡眠 7時間20分</span></h4>
+          <div class="kv">
+            <div class="k">起床</div><div>05:20</div>
+            <div class="k">母と散歩</div><div>05:50 〜 06:10 (20分)</div>
+            <div class="k">朝食準備</div><div>06:40 〜 08:20 (1時間40分)</div>
+            <div class="k">勉強</div><div>— 〜 —</div>
+          </div>
+        </div>
+
+        <div class="btn">この日の食事を印刷(PCへ送る)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 4つのカードを縦に並べる</h3>
+      <p>食事・運動・血圧・時間を1枚ずつのカードで。各アプリの「今日の要約」を1画面に集めた形。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="B" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="phone">
+        <div class="bar"><span class="arrow">◀</span><span>10/15 (木)</span><span class="arrow">▶</span></div>
+
+        <div class="card">
+          <h4>この日のまとめ</h4>
+          <div class="muted">食事 2,236 kcal(目標 1,800) ・ 運動 27分 ・ 血圧 132/84 ・ 睡眠 7時間20分</div>
+        </div>
+
+        <div class="card">
+          <div class="tl">
+            <div class="ev sleep"><span class="time">22:00</span><span class="lab">前日の推定入眠</span></div>
+            <div class="ev sleep"><span class="time">05:20</span><span class="lab">起床</span> <span class="det">睡眠 7時間20分</span></div>
+            <div class="ev bp"><span class="time">05:34</span><span class="lab">血圧測定</span> <span class="det">左 132/84 ・ 右 126/87</span></div>
+            <div class="ev ex"><span class="time">05:50</span><span class="lab">母と散歩</span> <span class="det">〜06:10 (20分)</span></div>
+            <div class="ev ex"><span class="time">—</span><span class="lab">ジョギング</span> <span class="det">3.6 km ／ 27分 ・ 筋トレ 腕立て 34+10+6 ほか</span></div>
+            <div class="ev"><span class="time">06:40</span><span class="lab">朝食準備</span> <span class="det">〜08:20 (1時間40分)</span></div>
+            <div class="ev meal"><span class="time">—</span><span class="lab">朝食 704 kcal</span> <span class="det">レタス、ブロッコリー、ほうれん草 … 22品</span></div>
+            <div class="ev meal"><span class="time">—</span><span class="lab">昼食 795 kcal</span> <span class="det">押し寿司・巻き寿司、野菜の天ぷら</span></div>
+            <div class="ev meal"><span class="time">—</span><span class="lab">夕食 434 kcal</span> <span class="det">バッテラ、赤飯、手羽先 … 6品</span></div>
+            <div class="ev meal"><span class="time">—</span><span class="lab">間食 303 kcal</span> <span class="det">シュークリーム、メグミルク</span></div>
+          </div>
+          <div class="muted" style="margin-top:6px">時刻は時間管理ダイアリーの記録から。食事・運動は時刻を持たないので「—」で順番だけ揃えています。</div>
+        </div>
+
+        <div class="btn">この日の食事を印刷(PCへ送る)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 1日を時刻順のタイムラインで串刺しにする</h3>
+      <p>時間管理ダイアリーの時刻を軸に、血圧・運動・食事を同じ縦線上に並べる。「何時にどう動いて何を食べたか」が1本で読める。</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">Bの弱点: 食事と運動は記録に時刻がないため、本当の時刻順にはできません(朝食の前後、程度の位置に固定で置く形になります)。</p>

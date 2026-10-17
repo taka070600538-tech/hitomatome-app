@@ -1,0 +1,102 @@
+<h2>B案を修正しました。この形でよいですか</h2>
+<p class="subtitle">食事ごとの栄養素合計行、大きくした1日のサマリー、固有栄養素、目標達成率の棒グラフを加えています。</p>
+
+<style>
+  .sheet { background:#fff; color:#111; border:1px solid #ccc; box-shadow:0 2px 8px rgba(0,0,0,.15); padding:20px 22px; font-family:"Yu Gothic","Meiryo",sans-serif; font-size:11px; line-height:1.45; width:100%; max-width:720px; margin:0 auto; box-sizing:border-box; }
+  .sheet h1 { font-size:18px; margin:0 0 2px; color:#111; }
+  .sheet .meta { color:#555; font-size:10px; margin-bottom:10px; }
+  .sheet table { width:100%; border-collapse:collapse; margin-bottom:4px; }
+  .sheet th, .sheet td { padding:1px 4px; border-bottom:1px solid #e3e3e3; text-align:left; }
+  .sheet th { background:#f1f1f1; font-weight:600; }
+  .sheet td:first-child { white-space:nowrap; }
+  .sheet td.n, .sheet th.n { text-align:right; white-space:nowrap; }
+  .sheet tr.subtotal td { font-weight:700; background:#f7f7f7; border-top:1.5px solid #999; border-bottom:none; }
+  .sheet .mealhead { display:flex; justify-content:space-between; font-weight:700; font-size:13px; margin:10px 0 2px; border-bottom:2px solid #333; padding-bottom:1px; }
+  .summary { border:2px solid #333; padding:10px 12px; margin:6px 0 10px; }
+  .summary .total { display:flex; justify-content:space-between; align-items:baseline; font-size:22px; font-weight:700; }
+  .summary .total .goal { font-size:13px; font-weight:400; color:#444; }
+  .summary .extras { font-size:13px; margin:6px 0 8px; }
+  .summary .extras b { font-weight:700; }
+  .bars { display:grid; grid-template-columns:auto 1fr auto; gap:3px 10px; align-items:center; font-size:12px; }
+  .bars .lab { font-weight:600; white-space:nowrap; }
+  .bars .track { position:relative; height:12px; background:#ececec; border-radius:2px; overflow:hidden; }
+  .bars .fill { position:absolute; left:0; top:0; bottom:0; background:#4b5563; }
+  .bars .fill.over { background:#dc2626; }
+  .bars .mark { position:absolute; top:-2px; bottom:-2px; width:2px; background:#111; }
+  .bars .val { white-space:nowrap; text-align:right; font-variant-numeric:tabular-nums; }
+  .bars .val b.over { color:#dc2626; }
+  .note { font-size:10px; color:#666; margin-top:4px; }
+</style>
+
+<div class="sheet">
+  <h1>2026年10月15日(木) の食事</h1>
+  <div class="meta">カロリー計算アプリの記録から</div>
+
+  <div class="summary">
+    <div class="total"><span>1日の合計</span><span>2,236 kcal <span class="goal">(目標 1,800 kcal)</span></span></div>
+    <div class="extras"><b>固有栄養素:</b> スルフォラファン 30 mg ／ ALA 4,968 mg</div>
+    <div class="bars">
+      <div class="lab">エネルギー</div><div class="track"><div class="fill over" style="width:83%"></div><div class="mark" style="left:66.7%"></div></div><div class="val">2,236 / 1,800 kcal <b class="over">124%</b></div>
+      <div class="lab">たんぱく質</div><div class="track"><div class="fill over" style="width:78%"></div><div class="mark" style="left:66.7%"></div></div><div class="val">70.1 / 60 g <b class="over">117%</b></div>
+      <div class="lab">脂質</div><div class="track"><div class="fill over" style="width:72%"></div><div class="mark" style="left:66.7%"></div></div><div class="val">97.2 / 90 g <b class="over">108%</b></div>
+      <div class="lab">炭水化物</div><div class="track"><div class="fill over" style="width:89%"></div><div class="mark" style="left:66.7%"></div></div><div class="val">266.1 / 200 g <b class="over">133%</b></div>
+      <div class="lab">塩分</div><div class="track"><div class="fill over" style="width:99%"></div><div class="mark" style="left:66.7%"></div></div><div class="val">7.4 / 5 g <b class="over">148%</b></div>
+    </div>
+    <div class="note">縦線が目標(100%)。目標を超えた分は赤。棒の右端は150%。</div>
+  </div>
+
+  <div class="mealhead"><span>朝食</span><span>704 kcal</span></div>
+  <table>
+    <tr><th>品目</th><th class="n">量</th><th class="n">kcal</th><th class="n">たんぱく質</th><th class="n">脂質</th><th class="n">炭水化物</th><th class="n">塩分</th></tr>
+    <tr><td>レタス</td><td class="n">25 g</td><td class="n">3</td><td class="n">0.2</td><td class="n">0.0</td><td class="n">0.4</td><td class="n">0.0</td></tr>
+    <tr><td>ブロッコリー 花序 生</td><td class="n">20 g</td><td class="n">7</td><td class="n">1.1</td><td class="n">0.1</td><td class="n">0.3</td><td class="n">0.0</td></tr>
+    <tr><td>ほうれん草 茹で</td><td class="n">25 g</td><td class="n">6</td><td class="n">0.7</td><td class="n">0.1</td><td class="n">0.1</td><td class="n">0.0</td></tr>
+    <tr><td>ブロッコリースプラウト</td><td class="n">15 g</td><td class="n">3</td><td class="n">0.3</td><td class="n">0.1</td><td class="n">0.4</td><td class="n">0.0</td></tr>
+    <tr><td>青ピーマン 生</td><td class="n">25 g</td><td class="n">5</td><td class="n">0.2</td><td class="n">0.1</td><td class="n">0.7</td><td class="n">0.0</td></tr>
+    <tr><td>黄パプリカ</td><td class="n">25 g</td><td class="n">7</td><td class="n">0.2</td><td class="n">0.1</td><td class="n">1.7</td><td class="n">0.0</td></tr>
+    <tr><td>赤パプリカ</td><td class="n">25 g</td><td class="n">7</td><td class="n">0.3</td><td class="n">0.1</td><td class="n">1.8</td><td class="n">0.0</td></tr>
+    <tr><td>きゅうり 生</td><td class="n">25 g</td><td class="n">3</td><td class="n">0.3</td><td class="n">0.0</td><td class="n">0.5</td><td class="n">0.0</td></tr>
+    <tr><td>赤色トマト 生</td><td class="n">30 g</td><td class="n">6</td><td class="n">0.2</td><td class="n">0.0</td><td class="n">1.1</td><td class="n">0.0</td></tr>
+    <tr><td>日本かぼちゃ 生</td><td class="n">30 g</td><td class="n">12</td><td class="n">0.5</td><td class="n">0.0</td><td class="n">2.4</td><td class="n">0.0</td></tr>
+    <tr><td>にんじん 生</td><td class="n">30 g</td><td class="n">11</td><td class="n">0.2</td><td class="n">0.1</td><td class="n">2.0</td><td class="n">0.0</td></tr>
+    <tr><td>蒸しサラダ豆</td><td class="n">25 g</td><td class="n">39</td><td class="n">3.3</td><td class="n">1.2</td><td class="n">2.2</td><td class="n">0.1</td></tr>
+    <tr><td>鶏卵 全卵 ゆで</td><td class="n">50 g</td><td class="n">67</td><td class="n">6.3</td><td class="n">5.2</td><td class="n">0.2</td><td class="n">0.2</td></tr>
+    <tr><td>オリーブオイル</td><td class="n">20 g</td><td class="n">180</td><td class="n">0.0</td><td class="n">20.0</td><td class="n">0.0</td><td class="n">0.0</td></tr>
+    <tr><td>日清有機えごま油</td><td class="n">9.2 g</td><td class="n">82</td><td class="n">0.0</td><td class="n">9.2</td><td class="n">0.0</td><td class="n">0.0</td></tr>
+    <tr><td>ひまわり牛乳</td><td class="n">200 g</td><td class="n">130</td><td class="n">6.4</td><td class="n">7.4</td><td class="n">9.6</td><td class="n">0.2</td></tr>
+    <tr><td>バナナ 生</td><td class="n">40 g</td><td class="n">37</td><td class="n">0.4</td><td class="n">0.1</td><td class="n">8.6</td><td class="n">0.0</td></tr>
+    <tr><td>キウイフルーツ 黄肉種 生</td><td class="n">30 g</td><td class="n">19</td><td class="n">0.3</td><td class="n">0.1</td><td class="n">4.1</td><td class="n">0.0</td></tr>
+    <tr><td>パイナップル</td><td class="n">30 g</td><td class="n">16</td><td class="n">0.2</td><td class="n">0.0</td><td class="n">4.1</td><td class="n">0.0</td></tr>
+    <tr><td>ブドウ</td><td class="n">40 g</td><td class="n">23</td><td class="n">0.2</td><td class="n">0.0</td><td class="n">6.1</td><td class="n">0.0</td></tr>
+    <tr><td>オレンジ ネーブル</td><td class="n">40 g</td><td class="n">19</td><td class="n">0.4</td><td class="n">0.0</td><td class="n">4.3</td><td class="n">0.0</td></tr>
+    <tr><td>りんご 皮つき 生</td><td class="n">40 g</td><td class="n">22</td><td class="n">0.1</td><td class="n">0.1</td><td class="n">5.7</td><td class="n">0.0</td></tr>
+    <tr class="subtotal"><td>朝食 合計</td><td class="n">819 g</td><td class="n">704</td><td class="n">21.8</td><td class="n">44.1</td><td class="n">56.3</td><td class="n">0.5</td></tr>
+  </table>
+
+  <div class="mealhead"><span>昼食</span><span>795 kcal</span></div>
+  <table>
+    <tr><td>押し寿司・巻き寿司の詰め合わせ</td><td class="n">300 g</td><td class="n">480</td><td class="n">15.0</td><td class="n">7.5</td><td class="n">87.0</td><td class="n">3.3</td></tr>
+    <tr><td>野菜の天ぷら盛り合わせ</td><td class="n">150 g</td><td class="n">315</td><td class="n">6.0</td><td class="n">19.5</td><td class="n">27.0</td><td class="n">0.8</td></tr>
+    <tr class="subtotal"><td>昼食 合計</td><td class="n">450 g</td><td class="n">795</td><td class="n">21.0</td><td class="n">27.0</td><td class="n">114.0</td><td class="n">4.1</td></tr>
+  </table>
+
+  <div class="mealhead"><span>夕食</span><span>434 kcal</span></div>
+  <table>
+    <tr><td>鯖の押し寿司(バッテラ)</td><td class="n">67 g</td><td class="n">117</td><td class="n">6.4</td><td class="n">3.4</td><td class="n">15.4</td><td class="n">0.7</td></tr>
+    <tr><td>赤飯</td><td class="n">64 g</td><td class="n">118</td><td class="n">2.8</td><td class="n">0.4</td><td class="n">25.6</td><td class="n">0.5</td></tr>
+    <tr><td>精白米 うるち米 炊飯後</td><td class="n">47 g</td><td class="n">73</td><td class="n">1.2</td><td class="n">0.1</td><td class="n">16.7</td><td class="n">0.0</td></tr>
+    <tr><td>手羽先の唐揚げ</td><td class="n">39 g</td><td class="n">98</td><td class="n">8.2</td><td class="n">6.6</td><td class="n">1.2</td><td class="n">0.5</td></tr>
+    <tr><td>オクラのごま醤油和え</td><td class="n">43 g</td><td class="n">19</td><td class="n">1.1</td><td class="n">0.8</td><td class="n">1.7</td><td class="n">0.5</td></tr>
+    <tr><td>しらすおろし</td><td class="n">25 g</td><td class="n">9</td><td class="n">1.1</td><td class="n">0.1</td><td class="n">0.7</td><td class="n">0.3</td></tr>
+    <tr class="subtotal"><td>夕食 合計</td><td class="n">285 g</td><td class="n">434</td><td class="n">20.8</td><td class="n">11.4</td><td class="n">61.3</td><td class="n">2.5</td></tr>
+  </table>
+
+  <div class="mealhead"><span>間食</span><span>303 kcal</span></div>
+  <table>
+    <tr><td>シュークリーム(ハロウィン包装)</td><td class="n">100 g</td><td class="n">245</td><td class="n">5.5</td><td class="n">14.0</td><td class="n">23.0</td><td class="n">0.2</td></tr>
+    <tr><td>メグミルク</td><td class="n">100 g</td><td class="n">58</td><td class="n">1.0</td><td class="n">0.8</td><td class="n">11.5</td><td class="n">0.1</td></tr>
+    <tr class="subtotal"><td>間食 合計</td><td class="n">200 g</td><td class="n">303</td><td class="n">6.5</td><td class="n">14.8</td><td class="n">34.5</td><td class="n">0.3</td></tr>
+  </table>
+</div>
+
+<p class="subtitle" style="margin-top:16px">棒グラフの色や、合計行の置き場所(各食事の末尾に置いています)など、気になる点があれば教えてください。</p>
