@@ -114,7 +114,7 @@ function openPrintModal(date, sheet) {
     }
     try {
       const r = await sync.putFile(requestPath(request), JSON.stringify(request, null, 2), { message: 'print-request: ' + date });
-      if (r.ok) { result.textContent = 'PCへ送りました。PCが起動していれば10分以内に印刷されます'; return; }
+      if (r.ok) { result.textContent = 'PCへ送りました。PCで印刷タスクを実行すると印刷されます'; return; }
       else if (r.message === 'トークンが未設定です') result.textContent = '設定タブでGitHub連携を設定してください';
       else result.textContent = r.message;
     } catch (e) {
