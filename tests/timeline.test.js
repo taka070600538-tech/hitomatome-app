@@ -91,14 +91,14 @@ test('血圧行は 05:34 に統合', () => {
   assert.equal(rows.filter((r) => r.label === '血圧測定').length, 0);
 });
 
-test('ジョギング時刻なし → skipped 06:30、データあり', () => {
+test('ジョギング時刻なし+データあり → 既定時刻 06:30 の通常行(スキップではない)', () => {
   const { rows } = build();
   const r = find(rows, (x) => x.eventKey === 'jogging');
-  assert.equal(r.skipped, true);
+  assert.equal(r.skipped, false);
   assert.equal(r.time, '06:30');
-  assert.equal(r.label, 'ジョギング スキップ');
+  assert.equal(r.label, 'ジョギング');
   assert.equal(r.detail, '3.6 km ／ 27分 ・ 約180 kcal');
-  assert.equal(r.note, '(時刻未入力)');
+  assert.equal(r.note, null);
   assert.equal(r.kind, 'jogging');
 });
 
@@ -121,13 +121,14 @@ test('3品以下なら全部、…なし', () => {
   assert.equal(r.detail, '朝食 2 kcal — a、b');
 });
 
-test('昼食 時刻なし+データ → skipped 13:00 note', () => {
+test('昼食 時刻なし+データ → 既定時刻 13:00 の通常行', () => {
   const r = find(build().rows, (x) => x.eventKey === 'lunch');
-  assert.equal(r.skipped, true);
+  assert.equal(r.skipped, false);
   assert.equal(r.time, '13:00');
-  assert.equal(r.label, '昼食 スキップ');
+  assert.equal(r.label, '昼食');
   assert.match(r.detail, /^昼食 795 kcal — ご飯$/);
-  assert.equal(r.note, '(時刻未入力)');
+  assert.equal(r.expand.length, 1);
+  assert.equal(r.note, null);
 });
 
 test('夕食 データなし → skipped 19:00 空 detail', () => {
@@ -139,13 +140,30 @@ test('夕食 データなし → skipped 19:00 空 detail', () => {
   assert.equal(r.note, null);
 });
 
-test('筋トレ 時刻なし+データ → skipped 17:30', () => {
+test('筋トレ 時刻なし+データ → 既定時刻 17:30 の通常行', () => {
   const r = find(build().rows, (x) => x.eventKey === 'strength');
-  assert.equal(r.skipped, true);
+  assert.equal(r.skipped, false);
   assert.equal(r.time, '17:30');
+  assert.equal(r.label, '筋トレ');
   assert.equal(r.detail, '腕立て 34+10+6 ／ 腹筋 50 ／ 背筋 50 ／ スクワット 50 ／ 握力 右35.5 左36.5 kg');
   assert.deepEqual(r.expand, ['腕立て 34+10+6', '腹筋 50', '背筋 50', 'スクワット 50', '握力 右35.5 左36.5 kg']);
-  assert.equal(r.note, '(時刻未入力)');
+  assert.equal(r.note, null);
+});
+
+test('夕食 時刻なし+データ → 既定時刻 19:00 の通常行、データなしの昼食はスキップ行', () => {
+  const s = { ...sheet, meals: [{ type: 'dinner', label: '夕食', items: [mkItem('味噌汁', 200, 40)], subtotal: { kcal: 40 } }] };
+  const { rows } = build({ sheet: s });
+  const d = find(rows, (x) => x.eventKey === 'dinner');
+  assert.equal(d.skipped, false);
+  assert.equal(d.time, '19:00');
+  assert.equal(d.label, '夕食');
+  assert.equal(d.detail, '夕食 40 kcal — 味噌汁');
+  assert.equal(d.note, null);
+  const l = find(rows, (x) => x.eventKey === 'lunch');
+  assert.equal(l.skipped, true);
+  assert.equal(l.label, '昼食 スキップ');
+  assert.equal(l.detail, '');
+  assert.equal(l.expand, null);
 });
 
 test('筋トレ時刻あり → 区間を detail に追記', () => {
@@ -198,15 +216,18 @@ test('calorie / bp 不在の notice と行なし', () => {
   assert.equal(rows.filter((r) => r.kind === 'meal' || r.kind === 'bp').length, 0);
 });
 
-test('diary 不在 → 全バインドが defaultTime の skipped 行 + notice', () => {
+test('diary 不在 → 全バインドが defaultTime の行(データありは通常行、なしは skipped)+ notice', () => {
   const src = sources({ diary: { available: false, state: null, day: { times: {}, note: '' } } });
   const { rows, notices } = build({ sources: src });
   assert.ok(notices.includes('時間管理ダイアリーのデータが見つかりません(この端末で一度開くと表示されます)'));
   assert.equal(rows.filter((r) => r.kind === 'diary').length, 0);
   const bp = find(rows, (r) => r.eventKey === 'bp');
-  assert.equal(bp.skipped, true);
+  assert.equal(bp.skipped, false);
   assert.equal(bp.time, '05:30');
-  assert.equal(find(rows, (r) => r.eventKey === 'dinner').time, '19:00');
+  assert.equal(bp.label, '血圧');
+  const dinner = find(rows, (r) => r.eventKey === 'dinner');
+  assert.equal(dinner.skipped, true);
+  assert.equal(dinner.time, '19:00');
   assert.deepEqual(rows.map((r) => r.sortKey), [...rows.map((r) => r.sortKey)].sort((a, b) => a - b));
 });
 
@@ -240,17 +261,26 @@ test('summaryText は null を省き、全 null は定型文', () => {
   assert.equal(summaryText({ kcal: null, goalKcal: null, joggingMin: null, bp: null, sleepMin: null }), 'この日の記録はありません');
 });
 
-test('同じ項目に2つのイベントを結びつけ → 後者は重複 note の skipped 行', () => {
+test('同じ項目に2つのイベントを結びつけ → 後者は既定時刻の通常行 + 重複 note', () => {
   const st = { ...settings, bindings: { ...settings.bindings, lunch: { itemId: 'bf-end', defaultTime: '13:00' } } };
   const { rows } = build({ settings: st });
   const bf = find(rows, (x) => x.eventKey === 'breakfast');
   assert.equal(bf.skipped, false);
   assert.equal(bf.time, '08:43');
   const lunch = find(rows, (x) => x.eventKey === 'lunch');
-  assert.equal(lunch.skipped, true);
+  assert.equal(lunch.skipped, false);
+  assert.equal(lunch.label, '昼食');
   assert.equal(lunch.time, '13:00');
   assert.match(lunch.detail, /^昼食 795 kcal/);
   assert.equal(lunch.note, '結びつけ先が他の出来事と重複しています(設定で選び直してください)');
+});
+
+test('同じ項目に結びつけ+データなし → 重複 note の skipped 行', () => {
+  const st = { ...settings, bindings: { ...settings.bindings, dinner: { itemId: 'bf-end', defaultTime: '19:00' } } };
+  const r = find(build({ settings: st }).rows, (x) => x.eventKey === 'dinner');
+  assert.equal(r.skipped, true);
+  assert.equal(r.label, '夕食 スキップ');
+  assert.equal(r.note, '結びつけ先が他の出来事と重複しています(設定で選び直してください)');
 });
 
 test('不正な defaultTime は EVENTS の既定に戻る', () => {
