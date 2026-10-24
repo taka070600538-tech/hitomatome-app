@@ -6,7 +6,6 @@ import { MEAL_LABELS } from './mealSummary.js';
 export const JOGGING_KCAL_PER_HOUR = 400;
 
 const MEAL_KEYS = ['breakfast', 'lunch', 'dinner', 'snack'];
-const SKIP_NOTE = '(時刻未入力)';
 const DUP_NOTE = '結びつけ先が他の出来事と重複しています(設定で選び直してください)';
 const NOT_FOUND_NOTE = '結びつけ先の項目が見つかりません(設定で選び直してください)';
 
@@ -191,13 +190,26 @@ export function buildTimeline({ date, sources, settings, sheet }) {
       });
       return;
     }
-    let note = data ? SKIP_NOTE : null;
+    // 結びつけ設定の不備は、記録の有無にかかわらず note で知らせる
+    let note = null;
     if (duplicate) note = DUP_NOTE;
     else if (b.itemId && diaryAvail && !items.some((it) => it.id === b.itemId)) note = NOT_FOUND_NOTE;
+    if (data) {
+      // 記録はあるが時刻が取れない → 既定時刻に実行したものとして通常行で出す
+      entries.push({
+        row: {
+          kind: eventKind(e.key), eventKey: e.key, time: b.defaultTime, prevDay: false, label: e.label,
+          detail: data.detail, expand: data.expand, skipped: false, note, sortKey: toMin(b.defaultTime),
+        },
+        rank: 1, idx: eIdx,
+      });
+      return;
+    }
+    // 記録がない → 既定時刻の位置にスキップ行
     entries.push({
       row: {
         kind: eventKind(e.key), eventKey: e.key, time: b.defaultTime, prevDay: false,
-        label: `${e.label} スキップ`, detail: data ? data.detail : '', expand: data ? data.expand : null,
+        label: `${e.label} スキップ`, detail: '', expand: null,
         skipped: true, note, sortKey: toMin(b.defaultTime),
       },
       rank: 1, idx: eIdx,
